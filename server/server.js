@@ -5,18 +5,21 @@ const app = require('./app')
 
 const httpServer = http.createServer(app)
 
-const io = require('socket.io')(httpServer)
+const cors = {
+  origin: 'http://localhost:3000'
+}
+
+const io = require('socket.io')(httpServer, { cors })
 
 io.on('connection', socket => {
   console.log('connection succesfull')
 
   socket.on(SOCKET_EVENTS.NEW_MESSAGE, async message => {
     try {
-      console.log(message)
-      const parsedMsg = JSON.parse(message)
-      const savedMessage = await Chat.create(parsedMsg)
+      const savedMessage = await Chat.create(message)
       io.emit(SOCKET_EVENTS.NEW_MESSAGE, savedMessage)
     } catch (err) {
+      console.log(err)
       io.emit(SOCKET_EVENTS.NEW_MESSAGE_ERROR, err)
     }
   })

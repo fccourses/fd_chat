@@ -10,9 +10,10 @@ const SOCKET_EVENTS = {
   NEW_MESSAGE_ERROR: 'newMessageError'
 }
 
-const socket = io(`ws://${baseUrl}`, { transports: ['websocket'] })
+const socket = io(`ws://${baseUrl}` /* , { transports: ['websocket'] } */)
 
 socket.on(SOCKET_EVENTS.NEW_MESSAGE, message => {
+  console.log(message)
   store.dispatch(ChatActionCreators.createMessageSuccess(message))
 })
 
